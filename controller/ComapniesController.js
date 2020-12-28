@@ -33,10 +33,10 @@ function doyourJob(km) {
 
             return stringToJsonObject;
         } else {
-            return "No Data";
+            return "Really? you want me to search for " + km + " only?! :p go bigger";
         }
     }
-    return "No Data";
+    return "Really? you want me to search for " + km + " only?! :p go bigger";
 
 
 }
