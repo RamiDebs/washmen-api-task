@@ -5,8 +5,8 @@ router = express.Router();
 CompaniesContrller = require("../controller/ComapniesController");
 
 // //setting up get api endpoint
-router.route('/test')
-    .get(getCompanies)
+router.route('/companies')
+    .get(getCompanies);
 
 
 
