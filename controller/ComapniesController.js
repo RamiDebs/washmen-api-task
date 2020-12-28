@@ -10,30 +10,39 @@ exports.getCompanies = (req, res) => {
 
 
 function doyourJob(km) {
-    companiesData
-        .forEach(company => {
-            company.offices.forEach(office => {
-                var LatLong = office.coordinates.split(',');
-                console.log(office.coordinates.split(','));
-                // StarbucksCafeCentralLondon(51.5144636, -0.142571)
-                var distance = calculateDistance(51.5144636, -0.142571, LatLong[0], LatLong[1]);
-                checkDistance(km, distance, company.organization.concat(',', office.location + "," + office.address));
+    if (km > 0) {
+        cleararray(resultData);
+        cleararray(arrayToString);
+        companiesData
+            .forEach(company => {
+                company.offices.forEach(office => {
+                    var LatLong = office.coordinates.split(',');
+                    console.log(office.coordinates.split(','));
+                    // StarbucksCafeCentralLondon(51.5144636, -0.142571)
+                    var distance = calculateDistance(51.5144636, -0.142571, LatLong[0], LatLong[1]);
+                    checkDistance(km, distance, company.organization.concat(',', office.location + "," + office.address));
+
+                });
 
             });
+        if (resultData.length > 0) {
+            // convert array to string
+            var arrayToString = JSON.stringify(Object.assign({}, resultData));
+            // convert string to json object
+            var stringToJsonObject = JSON.parse(arrayToString);
 
-        });
-    if (resultData.length > 0) {
-        // convert array to string
-        var arrayToString = JSON.stringify(Object.assign({}, resultData));
-        // convert string to json object
-        var stringToJsonObject = JSON.parse(arrayToString);
-
-        return stringToJsonObject;
-    } else {
-        return JSON.stringify("No Data");
+            return stringToJsonObject;
+        } else {
+            return "No Data";
+        }
     }
+    return "No Data";
 
 
+}
+
+function cleararray(array) {
+    array = [];
 }
 
 function checkDistance(userInputKm, distanceKM, data) {
