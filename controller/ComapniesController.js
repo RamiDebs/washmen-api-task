@@ -1,42 +1,53 @@
-//Data
-var companiesData = require("../Database/partners.json");
-var resultData = [];
-
 //get Method
 exports.getCompanies = (req, res) => {
-    var km = req.query.km
+    let km = req.query.km
     res.json(doyourJob(km));
+    // res.json(test())
 };
 
 
+
+//Data
+let companiesData = require("../Database/partners.json");
+let resultData = [];
+let distanceData = [];
+const Sort = require('../helper/Sort');
+
+function test() {
+    let x = Sort.val();
+    console.log(x);
+}
+
 function doyourJob(km) {
     if (km > 0) {
-        cleararray(resultData);
-        cleararray(arrayToString);
         companiesData
             .forEach(company => {
                 company.offices.forEach(office => {
-                    var LatLong = office.coordinates.split(',');
-                    console.log(office.coordinates.split(','));
+                    let LatLong = office.coordinates.split(',');
+                    console.log(LatLong);
                     // StarbucksCafeCentralLondon(51.5144636, -0.142571)
-                    var distance = calculateDistance(51.5144636, -0.142571, LatLong[0], LatLong[1]);
+                    let distance = calculateDistance(51.5144636, -0.142571, LatLong[0], LatLong[1]);
                     checkDistance(km, distance, company.organization.concat(',', office.location + "," + office.address));
 
                 });
 
             });
         if (resultData.length > 0) {
-            // convert array to string
-            var arrayToString = JSON.stringify(Object.assign({}, resultData));
-            // convert string to json object
-            var stringToJsonObject = JSON.parse(arrayToString);
+            resultData = Sort.quickSort(distanceData, resultData, 0, distanceData.length - 1);
 
+            // convert array to string
+            let arrayToString = JSON.stringify(Object.assign({}, resultData));
+            // convert string to json object
+            let stringToJsonObject = JSON.parse(arrayToString);
+            cleararray(distanceData);
+            cleararray(resultData);
+            cleararray(arrayToString);
             return stringToJsonObject;
         } else {
-            return "Really? you want me to search for " + km + " only?! :p go bigger";
+            return "Really? you want me to search for " + km + " km only?! :p go bigger";
         }
     }
-    return "Really? you want me to search for " + km + " only?! :p go bigger";
+    return "Really? you want me to search for " + km + " km only?! :p go bigger";
 
 
 }
@@ -48,7 +59,8 @@ function cleararray(array) {
 function checkDistance(userInputKm, distanceKM, data) {
     console.log(userInputKm + " " + distanceKM);
     if (userInputKm >= distanceKM) {
-        resultData.push(data);
+        resultData.push(data.concat('  --- Distance --- ', distanceKM));
+        distanceData.push(distanceKM);
     }
 }
 
