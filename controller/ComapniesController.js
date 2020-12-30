@@ -6,34 +6,21 @@ exports.getCompanies = (req, res) => {
 
 //Data
 let companiesData = require("../Database/partners.json");
-let resultData = [];
-let distanceData = [];
+var resultData = [];
+var distanceData = [];
 const Sort = require('../helper/Sort');
 
 function doyourJob(km) {
     if (km > 0) {
-        companiesData
-            .forEach(company => {
-                company.offices.forEach(office => {
-                    let LatLong = office.coordinates.split(',');
-                    console.log(LatLong);
-                    // StarbucksCafeCentralLondon(51.5144636, -0.142571)
-                    let distance = calculateDistance(51.5144636, -0.142571, LatLong[0], LatLong[1]);
-                    checkDistance(km, distance, company.organization.concat(',', office.location + "," + office.address));
-
-                });
-
-            });
+        loadData(km);
         if (resultData.length > 0) {
             resultData = Sort.quickSort(distanceData, resultData, 0, distanceData.length - 1);
-
             // convert array to string
-            let arrayToString = JSON.stringify(Object.assign({}, resultData));
+            var arrayToString = JSON.stringify(Object.assign({}, resultData));
             // convert string to json object
-            let stringToJsonObject = JSON.parse(arrayToString);
-            cleararray(distanceData);
-            cleararray(resultData);
-            cleararray(arrayToString);
+            var stringToJsonObject = JSON.parse(arrayToString);
+            //cleaing arrays
+            cleararray();
             return stringToJsonObject;
         } else {
             return "Really? you want me to search for " + km + " km only?! :p go bigger";
@@ -44,8 +31,25 @@ function doyourJob(km) {
 
 }
 
-function cleararray(array) {
-    array = [];
+function loadData(km) {
+    companiesData
+        .forEach(company => {
+            company.offices.forEach(office => {
+                let LatLong = office.coordinates.split(',');
+                console.log(LatLong);
+                // StarbucksCafeCentralLondon(51.5144636, -0.142571)
+                let distance = calculateDistance(51.5144636, -0.142571, LatLong[0], LatLong[1]);
+                checkDistance(km, distance, company.organization.concat(',', office.location + "," + office.address));
+
+            });
+
+        });
+}
+
+function cleararray() {
+    distanceData = [];
+    resultData = [];
+    arrayToString = [];
 }
 
 function checkDistance(userInputKm, distanceKM, data) {

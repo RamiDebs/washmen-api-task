@@ -12,6 +12,7 @@ let Sort = {
             }
         }
         return companies;
+
     },
 
     val: () => {
