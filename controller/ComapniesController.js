@@ -2,21 +2,13 @@
 exports.getCompanies = (req, res) => {
     let km = req.query.km
     res.json(doyourJob(km));
-    // res.json(test())
 };
-
-
 
 //Data
 let companiesData = require("../Database/partners.json");
 let resultData = [];
 let distanceData = [];
 const Sort = require('../helper/Sort');
-
-function test() {
-    let x = Sort.val();
-    console.log(x);
-}
 
 function doyourJob(km) {
     if (km > 0) {
